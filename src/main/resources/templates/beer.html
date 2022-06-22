@@ -143,9 +143,8 @@
                                                 <label for="Caractéristiques"
                                                        class="col-sm-4 col-form-label">Caractéristiques</label>
                                                 <div class="col-sm-8">
-                                                <textarea th:value="${detailBiere.getCaracteristiques()}"
-                                                          type="text" class="form-control" id="Caractéristiques"
-                                                          placeholder="Caractéristiques" disabled></textarea>
+                                                <textarea type="text" class="form-control" id="Caractéristiques"
+                                                          placeholder="Caractéristiques" disabled th:text="${detailBiere.getCaracteristiques()}"></textarea>
                                                 </div>
                                             </div>
                                         </th:block>
@@ -197,7 +196,7 @@
                                                 <label for="commentaire"
                                                        class="col-sm-2 col-form-label">Commentaire</label>
                                                 <div class="col-sm-10">
-                                                <textarea th:value="${detailBiere.getType().getCommentaire()}"
+                                                <textarea th:text="${detailBiere.getType().getCommentaire()}"
                                                           type="text" class="form-control" id="commentaire"
                                                           placeholder="Commentaire" disabled></textarea>
                                                 </div>

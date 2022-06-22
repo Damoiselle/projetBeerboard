@@ -1,11 +1,9 @@
 package fr.almeri.beerboard.repositories;
-
 import fr.almeri.beerboard.models.Biere;
 import fr.almeri.beerboard.models.BiereId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 
 @Repository
@@ -21,6 +19,9 @@ public ArrayList<Integer> getNbVersions();
  public ArrayList<Integer> getNbBieres();
  @Query("SELECT b.tauxAlcool FROM Biere b group by b.tauxAlcool ORDER BY b.tauxAlcool DESC")
  public ArrayList<String> getTxAlcool();
+
+ @Query("SELECT b FROM Biere b WHERE b.marque.brasserie.codeBrasserie = :code ORDER BY b.marque.nomMarque, b.version ASC")
+ public ArrayList<Biere> getMarqueVersionByBrasserie(String code);
 }
 
 

@@ -1,7 +1,9 @@
 package fr.almeri.beerboard.controllers;
 
 import fr.almeri.beerboard.models.Biere;
+import fr.almeri.beerboard.models.BiereId;
 import fr.almeri.beerboard.models.Brasserie;
+import fr.almeri.beerboard.repositories.BiereRepository;
 import fr.almeri.beerboard.repositories.BrasserieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.ArrayList;
 
 @Controller
@@ -17,6 +18,9 @@ public class BreweriesController {
 
     @Autowired
     private BrasserieRepository brasserieRepository;
+
+    @Autowired
+    private BiereRepository biereRepository;
 
     @GetMapping("/breweries")
     public String getPageBreweries(Model pModel) {
@@ -29,7 +33,7 @@ public class BreweriesController {
 
 
     @GetMapping("/see-brewery/{code}")
-    public String getPageBreweries(Model pModel, @PathVariable(required = true) String code) {
+    public String getPageBrewery(Model pModel, @PathVariable(required = true) String code) {
 
         //listBrasseries = indice, listBrasseriesFromDatabase = objet à afficher
 //        ArrayList<Brasserie> listBrasseriesFromDatabase = (ArrayList<Brasserie>) brasserieRepository.findAll();
@@ -39,18 +43,34 @@ public class BreweriesController {
         //Je récupère la brasserie via le repository avec un findById
         //et je passe en paramètres ce que je récupère via l'URL
         //orElseThrow() va déclencher une exception si on ne trouve pas la brasserie & non arrêter le programme
+
         Brasserie brasserie = brasserieRepository.findById(code).orElseThrow();
+        pModel.addAttribute("detailBrasserie", brasserie);
+        pModel.addAttribute("detailBiere", biereRepository.getMarqueVersionByBrasserie(code));
         return "brewery";
     }
+
+//    @GetMapping("/add-brewery/")
+//    public String getPageAddBrewery(Model pModel) {
+//
+//
+//        //Je récupère la brasserie via le repository avec un findById
+//        //et je passe en paramètres ce que je récupère via l'URL
+//        //orElseThrow() va déclencher une exception si on ne trouve pas la brasserie & non arrêter le programme
+//
+//        Brasserie brasserie = brasserieRepository.;
+//        pModel.addAttribute("detailBrasserie", brasserie);
+//        return "brewery";
+//    }
 
     //URL appelée  : /see-brewery1?code=variable&toto=variable2
-    @GetMapping("/see-brewery1")
-    public String getBreweryByCode(Model pModel, @RequestParam(required = true) String
-            code, @RequestParam(required = false) String toto) {
+//    @GetMapping("/see-brewery1")
+//    public String getBreweryByCode(Model pModel, @RequestParam(required = true) String
+//            code, @RequestParam(required = false) String toto) {
         //Le nom donné au paramètre dans le @RequestParam doit être le même que la clef utilisée dans l'URL
 
-        return "brewery";
-    }
+//        return "brewery";
+//    }
 
 
 }
