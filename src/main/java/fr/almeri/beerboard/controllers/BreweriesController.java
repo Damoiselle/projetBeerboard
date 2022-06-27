@@ -5,12 +5,13 @@ import fr.almeri.beerboard.models.BiereId;
 import fr.almeri.beerboard.models.Brasserie;
 import fr.almeri.beerboard.repositories.BiereRepository;
 import fr.almeri.beerboard.repositories.BrasserieRepository;
+import fr.almeri.beerboard.repositories.RegionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.ArrayList;
 
 @Controller
@@ -21,6 +22,9 @@ public class BreweriesController {
 
     @Autowired
     private BiereRepository biereRepository;
+
+    @Autowired
+    private RegionRepository regionRepository;
 
     @GetMapping("/breweries")
     public String getPageBreweries(Model pModel) {
@@ -50,27 +54,56 @@ public class BreweriesController {
         return "brewery";
     }
 
-//    @GetMapping("/add-brewery/")
-//    public String getPageAddBrewery(Model pModel) {
-//
-//
-//        //Je récupère la brasserie via le repository avec un findById
-//        //et je passe en paramètres ce que je récupère via l'URL
-//        //orElseThrow() va déclencher une exception si on ne trouve pas la brasserie & non arrêter le programme
-//
+    @GetMapping("/add-brewery") //soit /add-brewery en création soit /add-brewery?code=ache en modif
+    public String getPageAddBrewery(Model pModel, @RequestParam(required = false) String code) {
+
+
+        //Je récupère la brasserie via le repository avec un findById
+        //et je passe en paramètres ce que je récupère via l'URL
+        //orElseThrow() va déclencher une exception si on ne trouve pas la brasserie & non arrêter le programme
+
+        pModel.addAttribute("listeRegion", regionRepository.findAll());
+
+        if(code == null){
+            //quand je veux ajouter une brasserie, je crée un élément Brasserie vide que j'envoie à l'html qui sera rempli via le formulaire
+            pModel.addAttribute("brasserie", new Brasserie());
+
+        }else{
+
+            Brasserie brasserie = brasserieRepository.findById(code).orElseThrow();
+            pModel.addAttribute("brasserie", brasserie);
+            pModel.addAttribute("update", true);
+
+        }
+
 //        Brasserie brasserie = brasserieRepository.;
 //        pModel.addAttribute("detailBrasserie", brasserie);
-//        return "brewery";
-//    }
+        return "add-brewery";
+    }
 
-    //URL appelée  : /see-brewery1?code=variable&toto=variable2
-//    @GetMapping("/see-brewery1")
-//    public String getBreweryByCode(Model pModel, @RequestParam(required = true) String
-//            code, @RequestParam(required = false) String toto) {
-        //Le nom donné au paramètre dans le @RequestParam doit être le même que la clef utilisée dans l'URL
 
-//        return "brewery";
-//    }
+    @PostMapping("/add-brewery")
+    public String addBreweryInDatabase(Model pModel, @ModelAttribute Brasserie uneBrasserie, RedirectAttributes message){
+
+        //Si Id existe alors on n'ajoute rien
+        if(brasserieRepository.existsById(uneBrasserie.getCodeBrasserie())){
+
+            message.addFlashAttribute("messagehtml"," L’identifiant de la brasserie existe déjà, veuillez en saisir un nouveau ou vérifier que cette brasserie n’existe pas déjà.");
+            return "redirect:/add-brewery";
+
+        }else {
+            //save = create si l'Id n'est pas connu en BDD
+            brasserieRepository.save(uneBrasserie);
+
+            message.addFlashAttribute("messagehtml"," La brasserie " +uneBrasserie.getNomBrasserie() + " a été enregistrée avec succès.");
+
+            //redirect: appelle le @GetMapping dont l'url est /breweries
+            return "redirect:/breweries";
+
+        }
+    }
+
+
 
 
 }
