@@ -64,15 +64,15 @@ public class BreweriesController {
 
         pModel.addAttribute("listeRegion", regionRepository.findAll());
 
-        if(code == null){
+        if (code == null) {
             //quand je veux ajouter une brasserie, je crée un élément Brasserie vide que j'envoie à l'html qui sera rempli via le formulaire
             pModel.addAttribute("brasserie", new Brasserie());
-
-        }else{
+            pModel.addAttribute("update", "false");
+        } else {
 
             Brasserie brasserie = brasserieRepository.findById(code).orElseThrow();
             pModel.addAttribute("brasserie", brasserie);
-            pModel.addAttribute("update", true);
+            pModel.addAttribute("update", "true");
 
         }
 
@@ -83,27 +83,37 @@ public class BreweriesController {
 
 
     @PostMapping("/add-brewery")
-    public String addBreweryInDatabase(Model pModel, @ModelAttribute Brasserie uneBrasserie, RedirectAttributes message){
+    public String addBreweryInDatabase(Model pModel, @ModelAttribute Brasserie uneBrasserie, RedirectAttributes message, String update) {
 
-        //Si Id existe alors on n'ajoute rien
-        if(brasserieRepository.existsById(uneBrasserie.getCodeBrasserie())){
+        if ("false".equals(update)) {
+            //Si Id existe alors on n'ajoute rien
+            if (brasserieRepository.existsById(uneBrasserie.getCodeBrasserie())) {
 
-            message.addFlashAttribute("messagehtml"," L’identifiant de la brasserie existe déjà, veuillez en saisir un nouveau ou vérifier que cette brasserie n’existe pas déjà.");
-            return "redirect:/add-brewery";
+                message.addFlashAttribute("messagehtml", " L’identifiant de la brasserie existe déjà, veuillez en saisir un nouveau ou vérifier que cette brasserie n’existe pas déjà.");
+                return "redirect:/add-brewery";
 
-        }else {
+            } else {
+                //save = create si l'Id n'est pas connu en BDD
+                brasserieRepository.save(uneBrasserie);
+
+                message.addFlashAttribute("messagehtml", " La brasserie " + uneBrasserie.getNomBrasserie() + " a été enregistrée avec succès.");
+
+                //redirect: appelle le @GetMapping dont l'url est /breweries
+                return "redirect:/breweries";
+            }
+
+
+        } else {
             //save = create si l'Id n'est pas connu en BDD
             brasserieRepository.save(uneBrasserie);
 
-            message.addFlashAttribute("messagehtml"," La brasserie " +uneBrasserie.getNomBrasserie() + " a été enregistrée avec succès.");
+            message.addFlashAttribute("messagehtml", " La brasserie " + uneBrasserie.getNomBrasserie() + " a été modifiée avec succès.");
 
             //redirect: appelle le @GetMapping dont l'url est /breweries
             return "redirect:/breweries";
-
         }
+
     }
-
-
 
 
 }

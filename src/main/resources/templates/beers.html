@@ -51,6 +51,9 @@
                                 <th>Couleur bière</th>
                                 <th>Taux alcool</th>
                                 <th>Caractéristiques</th>
+                                <th>Détail</th>
+                                <th>Modification</th>
+
 
                                 </thead>
 
@@ -72,6 +75,9 @@
                                     <td>
                                         <a th:href="@{'/see-beer?marque='+${biere.getMarque().nomMarque}+'&version='+${biere.getVersion()}}"><i
                                                 class="fas fa-eye"></i></a></td>
+
+                                    <td><a th:href="@{'/add-beer?marque='+${biere.getMarque().getNomMarque}+'&version='+${biere.getVersion()}}"><i
+                                            class="fas fa-pencil"></i></a></td>
 
                                 </tr>
                                 </tbody>
