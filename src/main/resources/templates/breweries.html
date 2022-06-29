@@ -37,6 +37,10 @@
 
                 <div class="alert alert-success" th:if="${messagehtml}" th:text="${messagehtml}" role="alert">
                 </div>
+
+
+                <div class="alert alert-danger" th:if="${messageerror}" th:text="${messageerror}" role="alert"></div>
+
                 <div class="row">
 
                     <div class="card mb-4">
@@ -51,6 +55,7 @@
                                 <th>Région</th>
                                 <th>Détail</th>
                                 <th>Modifier</th>
+                                <th>Supprimer</th>
 
                                 </thead>
 
@@ -73,6 +78,9 @@
 
                                     <td><a th:href="@{'/add-brewery?code='+${brasserie.getCodeBrasserie()}}"><i
                                             class="fas fa-pencil"></i></a></td>
+
+                                    <td><a th:href="@{'/delete-brewery?code='+${brasserie.getCodeBrasserie()}}"><i
+                                            class="fas fa-trash"></i></a></td>
 
 
                                 </tr>

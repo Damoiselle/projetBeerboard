@@ -2,6 +2,7 @@ package fr.almeri.beerboard.controllers;
 
 import fr.almeri.beerboard.models.Biere;
 import fr.almeri.beerboard.models.BiereId;
+import fr.almeri.beerboard.models.Brasserie;
 import fr.almeri.beerboard.models.Marque;
 import fr.almeri.beerboard.repositories.BiereRepository;
 import fr.almeri.beerboard.repositories.MarqueRepository;
@@ -124,4 +125,20 @@ public class BeersController {
         }
 
     }
+
+    //Gestion de la suppression
+    @GetMapping("/delete-beer")
+    public String getPageDelBeer(Model pModel, @RequestParam(required = true) String marque, @RequestParam(required = true) String version, RedirectAttributes message) {
+
+
+        Biere biere = biereRepository.findById(new BiereId(marque, version)).orElseThrow();
+
+
+        message.addFlashAttribute("messagehtml", " La biere " + biere.getMarque().getNomMarque() + " a été supprimée avec succès.");
+        biereRepository.delete(biere);
+
+        return "redirect:/beers";
+    }
+
+
 }

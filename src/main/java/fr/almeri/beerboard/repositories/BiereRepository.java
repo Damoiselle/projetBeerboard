@@ -3,6 +3,7 @@ import fr.almeri.beerboard.models.Biere;
 import fr.almeri.beerboard.models.BiereId;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 
@@ -22,6 +23,10 @@ public ArrayList<Integer> getNbVersions();
 
  @Query("SELECT b FROM Biere b WHERE b.marque.brasserie.codeBrasserie = :code ORDER BY b.marque.nomMarque, b.version ASC")
  public ArrayList<Biere> getMarqueVersionByBrasserie(String code);
+
+ @Query("SELECT b FROM Biere b WHERE b.marque.brasserie.codeBrasserie = :code ORDER BY b.marque.nomMarque ASC")
+ public ArrayList<Biere> getBiereABrasserie(@Param("code") String code);
+
 }
 
 

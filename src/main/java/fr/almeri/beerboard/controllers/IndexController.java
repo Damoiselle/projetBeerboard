@@ -1,9 +1,7 @@
 package fr.almeri.beerboard.controllers;
 
-import fr.almeri.beerboard.repositories.BiereRepository;
-import fr.almeri.beerboard.repositories.BrasserieRepository;
-import fr.almeri.beerboard.repositories.MarqueRepository;
-import fr.almeri.beerboard.repositories.PaysRepository;
+import fr.almeri.beerboard.models.User;
+import fr.almeri.beerboard.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,14 +9,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static fr.almeri.beerboard.controllers.LoginController.getSalt;
+import static fr.almeri.beerboard.controllers.LoginController.hashMD5withSalt;
 
 
 @Controller
 public class IndexController {
 
+//    @Autowired
+//    private UserRepository userRepository;
     @Autowired
     private PaysRepository paysRepository;
 
@@ -33,6 +38,9 @@ public class IndexController {
 
     @GetMapping("/")
     public String home(Model pModel, HttpSession pSession) {
+
+        if (pSession.getAttribute("auth") != null)
+        {
         pModel.addAttribute("bieres", 328);
         pModel.addAttribute("brasseries", 99);
 
@@ -66,11 +74,34 @@ public class IndexController {
         pModel.addAttribute("labelsBarChart2", biereRepository.getNomsMarques());
         pModel.addAttribute("datasBarChart2", biereRepository.getNbVersions());
 
+        //Ajout d'un utilisateur pour tester la connexion
+//        String pass = "pass";
+//        try
+//
+//        {
+//            byte[] salt = getSalt();
+//            String hashPass = hashMD5withSalt(pass, salt);
+//            User u = new User("mdagniau@almeri.fr", hashPass , salt);
+//            userRepository.save(u);
+//        }
+//        catch(NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//
+//        }
+//        catch(NoSuchProviderException e){
+//            e.printStackTrace();
+//        }
+
+
         return "index";
-    }
+        } else {
+            return "login";
+        }
+        }
 
     @GetMapping("/logout")
     public String logout(Model pModel, RedirectAttributes pRedirectAttributes, HttpSession pSession) {
         return "redirect:/";
     }
+
 }

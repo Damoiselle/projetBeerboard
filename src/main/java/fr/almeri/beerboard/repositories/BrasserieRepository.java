@@ -1,8 +1,10 @@
 package fr.almeri.beerboard.repositories;
 
+import fr.almeri.beerboard.models.Biere;
 import fr.almeri.beerboard.models.Brasserie;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -18,6 +20,6 @@ public interface BrasserieRepository extends CrudRepository<Brasserie,String> {
     public ArrayList<String> getRegionsBrasserie();
     @Query("SELECT COUNT(p.codeBrasserie) FROM Brasserie p group by p.region.nomRegion ORDER BY p.region.nomRegion ASC")
     public ArrayList<Integer> getNbBrasserieRegion();
-    
+
 
 }

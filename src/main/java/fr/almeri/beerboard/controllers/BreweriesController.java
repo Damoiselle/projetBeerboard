@@ -115,6 +115,29 @@ public class BreweriesController {
 
     }
 
+//Gestion de la suppression
+    @GetMapping("/delete-brewery")
+    public String getPageDelBrewery(Model pModel, @RequestParam(required = true) String code, RedirectAttributes message) {
+
+
+
+            Brasserie brasserie = brasserieRepository.findById(code).orElseThrow();
+            ArrayList<Biere> brasserieAvecBiere = biereRepository.getBiereABrasserie(brasserie.getCodeBrasserie());
+
+            if (brasserieAvecBiere.isEmpty()){
+                message.addFlashAttribute("messagehtml", " La brasserie " + brasserie.getNomBrasserie() + " a été supprimée avec succès.");
+                brasserieRepository.delete(brasserie);
+
+            }else{
+                message.addFlashAttribute("messageerror", " La brasserie " + brasserie.getNomBrasserie() + " n'a pas pu être supprimée.");
+
+            }
+
+
+//        Brasserie brasserie = brasserieRepository.;
+//        pModel.addAttribute("detailBrasserie", brasserie);
+        return "redirect:/breweries";
+    }
 
 }
 
